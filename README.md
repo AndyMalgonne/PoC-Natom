@@ -45,3 +45,17 @@ Grâce à Pulumi, l'infrastructure complète se déploie en une seule ligne de c
 Dans le dossier `infra` (avec l'environnement virtuel Pulumi activé) :
 ```bash
 pulumi up
+```
+
+---
+
+## 📊 Observabilité & Supervision (Industrie 4.0)
+
+Dans un environnement de production, la donnée brute n'a de valeur que si elle est visuellement exploitable par les opérateurs en temps réel. Pour répondre à ce besoin critique d'**observabilité**, l'architecture intègre une stack de monitoring dédiée :
+
+* **InfluxDB :** Une base de données temporelle (*Time-Series Database*) ultra-légère, optimisée pour ingérer le flux continu de données IoT généré par le broker MQTT.
+* **Grafana :** Une interface de visualisation branchée en direct sur la base InfluxDB pour une lecture instantanée de l'état de l'usine.
+
+![Tableau de bord Grafana - Température Moteur](docs/grafana-dashboard.png)
+
+> **💡 Cas d'usage :** *La courbe ci-dessus illustre la remontée en temps réel de la température du moteur (rafraîchissement toutes les 5 secondes). C'est le franchissement du seuil critique (50°C) visible sur ce graphe qui déclenche dynamiquement le routage de la donnée vers l'Agent IA pour générer l'alerte sémantique.*

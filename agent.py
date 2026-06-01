@@ -2,6 +2,9 @@ import os
 import paho.mqtt.client as mqtt
 from huggingface_hub import InferenceClient
 from dotenv import load_dotenv
+from influxdb import InfluxDBClient
+
+db_client = InfluxDBClient(host='influxdb', port=8086, database='usine')
 
 #IA Config
 load_dotenv()
@@ -19,6 +22,18 @@ def on_message(client, userdata, msg):
     temperature = int(msg.payload.decode())
     print(f"\nAgent <- Nouvelle donnée reçue : {temperature}°C")
 
+    point_de_donnee = [{
+        "measurement": "capteur_moteur",
+        "fields": {
+            "temperature": float(temperature) # On utilise ta variable extraite juste au-dessus
+        }
+    }]
+    try:
+        db_client.write_points(point_de_donnee)
+    except Exception as e:
+        print(f"⚠️ Impossible d'écrire dans InfluxDB : {e}")
+
+    # Ensuite, on passe à la logique d'Intelligence Artificielle
     if temperature > 50:
         print("⚠️ Surchauffe détectée ! Interrogation de l'IA...")
         prompt = (
